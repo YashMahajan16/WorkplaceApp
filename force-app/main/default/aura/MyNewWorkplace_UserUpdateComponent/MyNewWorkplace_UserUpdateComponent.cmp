@@ -1,5 +1,6 @@
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome"
-                controller="MyNewWorkplace_CurrentUserController"
+<aura:component implements="force:appHostable,
+                            flexipage:availableForAllPageTypes,
+                            flexipage:availableForRecordHome"
                 access="global">
 
     <aura:attribute name="isEdit" type="boolean" default="false"/>
