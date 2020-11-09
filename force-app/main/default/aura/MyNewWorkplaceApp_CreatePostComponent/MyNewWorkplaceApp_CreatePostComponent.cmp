@@ -1,0 +1,36 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome" 
+                controller="MyNewWorkplaceApp_CrtePstApexController"
+                access="global" >
+	
+    <aura:attribute name="postMessage" type="String"/>
+    <aura:attribute name="isPostSuccessful" type="boolean" default="false"/>
+    <aura:attribute name="inputRichTextVal" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!-- <aura:registerEvent name="postUpdateEvent" type="c:MyNewWorkplaceApp_PostUpdateEvent"/> -->
+    
+    <p class="slds-p-horizontal_small">
+        <lightning:card title="Create Post">
+            <div>
+                <lightning:layout verticalAlign="center" pullToBoundary="small">
+  
+                    <lightning:layoutItem padding="horizontal-small" flexibility="auto">
+                        <lightning:inputRichText variant="bottom-toolbar" value="{!v.postMessage}" 
+                                                    placeholder="Type something interesting">
+                            <lightning:insertImageButton/>                                
+                        </lightning:inputRichText>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem padding="horizontal-small" flexibility="auto">
+                            <lightning:button label="Post" variant="brand" onclick="{!c.createPost}"/>
+                    </lightning:layoutItem>    
+                </lightning:layout>
+            </div>
+        </lightning:card>
+    </p>
+    <!--
+    <br/>
+    <br/>
+    <c:MyNewWorkplaceApp_GetPostsComponent aura:id="getAllPosts"/>-->
+</aura:component>

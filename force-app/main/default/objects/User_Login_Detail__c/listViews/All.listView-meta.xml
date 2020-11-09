@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>User_Name__c</columns>
+    <columns>First_Name__c</columns>
+    <columns>Last_Name__c</columns>
+    <columns>City__c</columns>
+    <columns>Department__c</columns>
+    <columns>Is_Current_User__c</columns>
+    <columns>Is_Profile_Pic_Uploaded__c</columns>
+    <columns>Profile_Picture_Path__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

@@ -1,0 +1,41 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome" 
+                controller="MyNewWorkplaceApp_CrtePstApexController"
+                access="global">
+
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="multiple" type="Boolean" default="true" />
+    <aura:attribute name="disabled" type="Boolean" default="true" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="encryptedToken" type="String" />
+
+    <aura:attribute name="myVal" type="String" />
+
+    <lightning:card>
+        <lightning:layout horizontalAlign="center" verticalAlign="center">
+            <lightning:layoutItem padding="horizontal-small">
+                <lightning:fileUpload label="Attach receipt"
+                name="fileUploader"
+                multiple="true"
+                accept="{!v.filetype}"
+                recordId="{!v.recordId}"
+                fileFieldName="Guest_Record_fileupload__c"
+                fileFieldValue="{!v.encryptedToken}"
+                onuploadfinished="{!c.handleUploadFinished}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+        <br/>
+        <br/>
+        <lightning:layout horizontalAlign="center" verticalAlign="center">
+            <lightning:layoutItem padding="horizontal-small">
+                <lightning:inputRichText variant="bottom-toolbar" value="{!v.myVal}" 
+                                            placeholder="Type something interesting">
+                    <lightning:insertImageButton/>                                
+                </lightning:inputRichText>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="horizontal-small">
+                <lightning:button label="Post" variant="brand" onclick="{!c.createPost}"/>   
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+</aura:component>

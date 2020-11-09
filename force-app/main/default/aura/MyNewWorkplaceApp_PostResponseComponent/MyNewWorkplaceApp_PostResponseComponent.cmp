@@ -1,0 +1,30 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+                access="global" >
+    
+    <aura:attribute name="liked" default="false" type="Boolean" />
+    <aura:attribute name="commented" default="false" type="Boolean" />    
+    <aura:attribute name="commentMessage" type="String" />
+    <aura:attribute name="parentRecordId" type="String" />
+    
+    <aura:registerEvent name="postUpdateEvent" type="c:MyNewWorkplaceApp_PostUpdateEvent"/>
+ 
+        <lightning:layout horizontalAlign="left">
+            <lightning:layoutItem size="3">
+                <div class="slds-m-around_medium">
+                    <lightning:buttonIconStateful iconName="utility:like" selected="{! v.liked }"
+                                                  onclick="{! c.handleLikeButtonClick }"/>
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3">
+                <div class="slds-m-around_medium">
+                    <lightning:buttonIconStateful iconName="utility:answer" selected="{! v.answered }"
+                                                  onclick="{! c.handleAnswerButtonClick }" size="small"/>
+                </div>               
+            </lightning:layoutItem>
+        </lightning:layout> 
+    
+    <aura:if isTrue="{!v.commented}">
+    	<lightning:input value="{!v.commentMessage}" placeHolder="Enter your comment here"/>
+	</aura:if> 	
+    
+</aura:component>

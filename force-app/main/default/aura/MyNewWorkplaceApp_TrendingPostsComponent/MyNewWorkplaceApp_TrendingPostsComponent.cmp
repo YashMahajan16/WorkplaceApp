@@ -1,0 +1,39 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome"
+                controller="MyNewWorkplaceApp_TrendingApexContrller"
+                access="global" >
+    	
+    <aura:attribute name="topTrendingPosts" type="Post__c[]"/>    
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!-- <aura:handler event="force:refreshView" action="{! c.doInit}" /> -->
+    <aura:handler event="c:MyNewWorkplace_UserEditEvent" action="{!c.doInit}"/>
+    
+    
+    <aura:iteration items="{!v.topTrendingPosts}" var="post">
+    	<lightning:card>
+            <div class="slds-p-horizontal--small">  
+                <lightning:layout horizontalAlign="center" verticalAlign="center">
+                    <lightning:layoutItem padding="horizontal-small">          
+                        <lightning:formattedText value="{!post.Post_Owner__c}" />
+                            <br/>
+                        <lightning:formattedText value="{!post.Message__c}" />
+                    </lightning:layoutItem>
+                </lightning:layout>  
+            </div>
+            <aura:set attribute="footer">
+                <lightning:layout horizontalAlign="center" verticalAlign="center">
+                    <lightning:layoutItem padding="horizontal-small">  
+                        <strong>
+                            <lightning:formattedNumber value="{!post.Likes_Count__c}"/> Likes
+                        </strong>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="horizontal-small">
+                        <strong>
+                            <lightning:formattedNumber value="{!post.Comments_Count__c}"/> Comments
+                        </strong>
+                    </lightning:layoutItem>
+                </lightning:layout>  
+            </aura:set>
+    	</lightning:card> 
+    </aura:iteration>
+</aura:component>

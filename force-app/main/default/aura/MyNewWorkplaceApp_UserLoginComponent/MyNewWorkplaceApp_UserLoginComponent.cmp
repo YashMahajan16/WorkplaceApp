@@ -1,0 +1,28 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+                access="global" >
+	
+    
+    <lightning:card title="User login">
+        <div>        
+            <lightning:layout horizontalAlign="center" verticalAlign="center">
+                <lightning:layoutItem padding="horizonatal-small">
+                    <lightning:select name="userSelect" label="Select User" required="true">
+                        <option value="">Choose User</option>
+                        <option value="1">User1</option>
+                        <option value="2">User2</option>
+                        <option value="3">User3</option>
+                        <option value="4">User4</option>
+                        <option value="5">User5</option>
+                    </lightning:select>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <aura:set attribute="footer">
+            <lightning:layout horizontalAlign="center" verticalAlign="center">
+                <lightning:layoutItem padding="horizonatal-small">
+                    <lightning:button label="Login" variant="brand" onclick="{!c.loginUser}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:set>        
+    </lightning:card>   
+</aura:component>

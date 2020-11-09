@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT" description="Event template" >
+    <!-- <aura:attribute name="commentMessage" type="string" default=" "/>
+    <aura:attribute name="isLiked" type="boolean" default="false"/>
+    <aura:attribute name="recordId" type="string" default=" "/> -->
+</aura:event>

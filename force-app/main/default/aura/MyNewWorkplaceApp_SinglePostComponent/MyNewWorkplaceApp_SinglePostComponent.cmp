@@ -1,0 +1,71 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome"
+                controller="MyNewWorkplaceApp_UpdatePostController"
+                access="global">
+
+    <aura:attribute name="singlePost" type="Post__c"/>
+    <aura:attribute name="isCommented" type="boolean"/>
+    <aura:attribute name="commentMessage" type="string"/>
+    <aura:attribute name="isCompCall" type="boolean" default="false"/>
+    <aura:attribute name="liked" type="Boolean" default="false"/>
+
+    <aura:registerEvent name="postUpdateEvent" type="c:MyNewWorkplaceApp_PostUpdateEvent"/>
+
+       <lightning:card title="User"> <!-- Posted by: {!v.singlePost.Post_Owner__c } -->
+            <aura:set attribute="title">
+                <div class="slds-text-heading_small">
+                   User <!-- Posted by: {!v.singlePost.Post_Owner__c } -->
+                </div>
+        	</aura:set>
+            	<div class="slds-p-horizontal--small">
+                    <lightning:layout horizontalAlign="center" verticalAlign="center">
+                        <lightning:layoutItem padding="horizontal-small">
+                            <div class="slds-text-body_small">
+                                <div class="slds-text-align_left">
+                                    <lightning:formattedText 
+                                        value="{!v.singlePost.Relative_Datetime__c}"/> ago
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div class="slds-text-body_medium">
+                                <div class="slds-text-align_center">
+                                    <strong>
+                                        <lightning:formattedText value="{!v.singlePost.Message__c}" /> 
+                                    </strong>
+                                 </div>
+                            </div>
+                            <br/>
+                            <aura:if isTrue="{!v.singlePost.Is_Image_Attached__c}">
+                                <img src="{!v.singlePost.Image_Path__c}"/>
+                            </aura:if>                           	 
+                            <br/>
+                            <lightning:formattedNumber value="{!v.singlePost.Likes_Count__c}" /> 
+                                        people liked this post.
+                        </lightning:layoutItem>
+                    </lightning:layout> 
+                </div>
+                    <aura:set attribute="footer">
+                        <lightning:layout horizontalAlign="center" verticalAlign="center">
+                            <lightning:layoutItem padding="horizontal-small">
+                                <lightning:buttonIconStateful iconName="utility:like" onclick="{!c.likePost }" 
+                                                                selected="{!v.singlePost.Is_Liked_By_Current_User__c}" />
+                                <!--<lightning:button label="Like" variant="brand" iconName="utility:like"
+                                                     iconPosition="left" onclick="{!c.likePost}"/>-->
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="horizontal-small">
+                                <lightning:button label="Comment" variant="brand" iconName="utility:comments" 
+                                                    iconPosition="left" onclick="{!c.checkComments}"/>
+
+                                <br/>
+                                <aura:if isTrue="{!v.isCommented}">
+                                    <lightning:input value="{!v.commentMessage}" 
+                                                        placeholder="Write your comment here"/>
+                                    <lightning:button label="Post Comment" variant="brand" 
+                                                        onclick="{!c.commentPost}"/>
+                                </aura:if>
+                            </lightning:layoutItem>                                
+                        </lightning:layout>  
+                    </aura:set>
+        </lightning:card> 
+        
+</aura:component>

@@ -1,0 +1,27 @@
+<template>
+        <lightning-layout horizontal-align="center" vertical-align="center"
+                            pull-to-boundary="">
+            <lightning-layout-item horizontal-padding="small">
+                <div style="width: 300px; background-color: honeydew">
+                    <lightning-vertical-navigation selected-item={selectedItem} onselect={handleSelect}
+                                                     class="navigation">
+                        <lightning-vertical-navigation-section label="Pages">
+                            <br/>
+                            <lightning-vertical-navigation-item-icon
+                                label="Home"
+                                name="Home"
+                                icon-name="utility:home">
+                            </lightning-vertical-navigation-item-icon>
+                            <br/>
+                            <lightning-vertical-navigation-item-icon
+                                label="My Profile"
+                                name="My Profile"
+                                icon-name="utility:user">
+                            </lightning-vertical-navigation-item-icon>
+                            <br/>
+                        </lightning-vertical-navigation-section>
+                    </lightning-vertical-navigation>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>  
+</template>

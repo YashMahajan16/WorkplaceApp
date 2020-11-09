@@ -1,0 +1,65 @@
+<template>    
+        <lightning-card>
+            <div style="background-color: steelblue">
+                <template if:true={isEdit}>
+                    <lightning-layout vertical-align="center" horizontal-align="center">
+                        <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                            <div style="width: 300px; text-align: center; background-color: paleturquoise ">
+                                <h2>
+                                    <strong>
+                                        <lightning-formatted-text value="Welcome user!!" >
+                                        </lightning-formatted-text>
+                                    </strong>
+                                </h2>
+                                <h3>
+                                    <lightning-formatted-text value="Please click button to edit your details" >
+                                    </lightning-formatted-text>
+                                </h3>
+                            </div>
+                            <br/>
+                            <div style="text-align: center; background-color: navajowhite">
+                                <lightning-button label="Edit" variant="base" icon-name="action:edit" onclick={edit}>                        
+                                </lightning-button>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                                <br/>
+                    <template if:true={isCurrentUserEdit}>
+                        <lightning-layout vertical-align="center" horizontal-align="center">
+                            <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                <div class="slds-p-around_medium lgc-bg">
+                                    <lightning-input name="inputFirstName" type="text" label="First Name" value={fName} required></lightning-input>
+                                </div>
+                                <br/>
+                                <div class="slds-p-around_medium lgc-bg">
+                                    <lightning-input name="inputLastName" type="text" label="Last Name" value={lName} required></lightning-input>
+                                </div>
+                                <br/>
+                                <div class="slds-p-around_medium lgc-bg">
+                                    <lightning-input name="inputDepartment" type="text" label="Department" value={department}></lightning-input>
+                                </div>
+                                <br/>
+                                <div class="slds-p-around_medium lgc-bg">
+                                    <lightning-input name="inputCity" type="text" label="City" value={city}></lightning-input>
+                                </div>
+                                <br/>
+                                <img src={profilePicPath} height="70" width="70"/>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                                    <br/>
+                        <lightning-layout vertical-align="center" horizontal-align="center">
+                            <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                <lightning-button label="Save" variant="brand" icon-name="utility:save" onclick={save}>                        
+                                </lightning-button>
+                            </lightning-layout-item>
+                            <lightning-layout-item>
+                                <lightning-input type="file" label="Add profile pic" 
+                                                    onchange={uploadProfilePic} accept="image/png, image/jpg">
+                                </lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
+                </template>
+            </div>
+        </lightning-card>
+</template>

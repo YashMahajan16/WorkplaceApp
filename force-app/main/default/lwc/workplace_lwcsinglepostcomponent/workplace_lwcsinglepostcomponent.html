@@ -1,0 +1,109 @@
+<template>
+    <lightning-card>
+        <h3 slot="title">
+            <div class="slds-border_bottom">
+                <div style="background-color: peachpuff">
+                <img src={post.Post_User__r.Profile_Picture_Path__c} height="50" width="50"/>               
+                    &nbsp;&nbsp;                
+                <lightning-formatted-text value={post.Post_Owner__c}>
+                </lightning-formatted-text>
+                </div>
+            </div>
+        </h3>
+
+        <div class="slds-box" style="background-color: azure">       
+            <lightning-layout>
+                <lightning-layout-item padding="horizontal-small">  
+                    <div style="font-weight:italic;font-size: 10px;text-align:left; margin: 15px">
+                        <lightning-formatted-text value={post.Relative_Datetime__c}>
+                        </lightning-formatted-text>
+                    </div>
+                        <br/>
+                    <div style="color:green;font-weight:bold;font-size: 20px;text-align:center">          
+                        <lightning-formatted-text value={post.Message__c}>
+                        </lightning-formatted-text>
+                    </div>  
+                         <br/>
+                    <template if:true={post.Is_Image_Attached__c}>
+                        <img src={post.Image_Path__c}/>
+                    </template>
+                        <br/>
+                    <strong>
+                        <lightning-formatted-number value={post.Likes_Count__c}> 
+                        </lightning-formatted-number>
+                        &nbsp;Likes
+                    </strong>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong>
+                        <lightning-formatted-number value={post.Comments_Count__c}> 
+                        </lightning-formatted-number>
+                        &nbsp;Comments
+                    </strong>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+
+        <div slot="footer" class="slds-card" style="background-color:peachpuff">
+            <lightning-layout vertical-align="center" pull-to-boundary="small">
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-button-icon-stateful icon-name="utility:like" selected={post.Like_Old_value__c} 
+                                                        onclick={handleLikeButtonClick} alternative-text="Like">
+                    </lightning-button-icon-stateful>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-button icon-name="utility:comments" label="Comment" variant="base"
+                                        onclick={handleCommentButtonClick}>
+                    </lightning-button>                     
+                </lightning-layout-item>
+                <template if:true={isCommented}>
+                    <lightning-layout horizontal-align="center" vertical-align="center"
+                                        pull-to-boundary="true">
+                        <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                            <lightning-input name="inputComment" type="text" placeholder="Write comment" 
+                                                value={comment}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                            <lightning-button label="Post" variant="brand" onclick={savePost}>                        
+                            </lightning-button>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>            
+            </lightning-layout>   
+        </div>
+            <br/> 
+            <div style="background-color: snow">         
+                <template if:true={post.Comments__r}>
+                    <template for:each={post.Comments__r} for:item="comment">
+                        <div key={comment.Id}> 
+                            <lightning-card>  
+                                <lightning-layout vertical-align="center" horizontal-align="center">
+                                    <lightning-layout-item padding="horizontal-small" flexibility="auto">    
+                                            <br/>                          
+                                        <lightning-formatted-text value={comment.Comment_User__r.User_Name__c}>                                
+                                        </lightning-formatted-text>
+                                                &nbsp;&nbsp;
+                                                <div style="color: chocolate;font-weight:bold;font-size: 10px;text-align:center"> 
+                                        <lightning-formatted-text value={comment.Comment_Message__c}>                                
+                                        </lightning-formatted-text>            
+                                                </div>                            
+                                            <br/>                                                
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                                <div slot="footer">
+                                    <lightning-layout>
+                                        <lightning-layout-item>        
+                                            <div style="font-size: 7px;text-align:left">           
+                                                <lightning-formatted-text value={comment.Relative_Time__c}>                                
+                                                </lightning-formatted-text>  
+                                            </div>                                              
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+                                </div>
+                            </lightning-card>   
+                        </div>
+                    </template>
+                </template>   
+            </div> 
+    </lightning-card>
+</template>

@@ -1,0 +1,44 @@
+<template>    
+        <template if:true={topFeeds.data}>
+            <template for:each={topFeeds.data} for:item="feed"> 
+                <div key={feed.Id} style="background-color: lavender">            
+                    <lightning-card>
+                        <div key={feed.Id} style="background-color: whitesmoke">
+                            <lightning-layout horizontal-align="center" vertical-align="center"
+                                                pull-to-boundary="small">
+                                <lightning-layout-item flexibility="auto" padding="horizontal-small">  
+                                    <div style="color:lightcoral;font-weight:bold;font-size: 10px;text-align:center">                                
+                                        <lightning-formatted-text value={feed.Post_Owner__c}>
+                                        </lightning-formatted-text> 
+                                    </div> 
+                                            <br/>   
+                                    <div style="color: rosybrown;font-size: 15px;text-align:center">
+                                        <lightning-formatted-text value={feed.Message__c}>
+                                        </lightning-formatted-text>  
+                                    </div>                              
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="center" vertical-align="center"
+                                                pull-to-boundary="small">
+                                <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                    <strong>
+                                        <lightning-formatted-number value={feed.Likes_Count__c}>
+                                        </lightning-formatted-number>
+                                        &nbsp;&nbsp;Likes
+                                    </strong>                             
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                    <strong>
+                                        <lightning-formatted-number value={feed.Comments_Count__c}> 
+                                        </lightning-formatted-number>
+                                        &nbsp;&nbsp;Comments
+                                    </strong>                                
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </lightning-card> 
+                    <br/>  
+                </div>             
+            </template>
+        </template>    
+</template>

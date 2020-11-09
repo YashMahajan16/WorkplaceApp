@@ -1,0 +1,62 @@
+<template>
+    <lightning-card title="Create Post">
+        <div slot="footer" style="background-color : rgb(231, 162, 183)">
+            <lightning-layout pull-to-boundary="small">
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-button-icon icon-name="utility:user" variant="brand"
+                                            title="Settings"></lightning-button-icon>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small" flexibility="grow">
+                    <lightning-input
+                        type="text"
+                        placeholder="Speak your mind!!"
+                        variant="label-hidden"
+                        label="New Post"
+                        required>
+                    </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-button
+                        variant="brand"
+                        label="Post"
+                        onclick={createPost}>
+                    </lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div slot="footer" style="background-color : lavender">
+            <lightning-layout horizontal-align="center" vertical-align="center" pull-to-boundary="small">
+                <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                <br/>
+                <lightning-input type="file"
+                                 label="Add / Upload Image"
+                                 onchange={handleImageUploaded}
+                                 accept="image/png, image/jpg"
+                                 multiple>
+                </lightning-input>
+                <template for:each={imagesUploaded} for:item="file">
+                    <div key={file.Title} class="slds-text-body_small">{file.Title}</div>
+                </template>
+                </lightning-layout-item>
+            </lightning-layout>           
+        </div>
+    </lightning-card>
+    <br/>
+    <br/>
+    <div class="slds-card" style="background-color : teal">
+        <template if:true={allPosts.data}>
+            <template for:each={allPosts.data} for:item="post">
+                <p key={post.Id}>
+                    <c-workplace_lwcsinglepostcomponent post={post} 
+                                                        islikedbycurrentuser={post.Is_Liked_By_Current_User__c}
+                                                        likeoldvalue={post.Like_Old_value__c}
+                                                        recordid={post.Id}
+                                                        currentusername={post.Post_Owner}
+                                                        currentuserid={currentUser.data.Id}>  
+                    </c-workplace_lwcsinglepostcomponent>
+                    <br/>
+                </p>
+            </template>
+        </template> 
+    </div>
+</template>

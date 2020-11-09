@@ -1,0 +1,32 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+                access="global">
+
+                <aura:attribute name="selectedItem" type="String" />
+                <aura:attribute name="currentContent" type="String" />
+            
+                <aura:handler name="init" value="{! this }" action="{! c.init }" />
+                <aura:registerEvent name="userEditEvent" type="c:MyNewWorkplace_UserEditEvent"/>
+
+    <lightning:card title="Navigation Items">
+        <lightning:layout horizontalAlign="left" verticalAlign="center">
+            <lightning:layoutItem padding="horizontal-small"> 
+                <lightning:verticalNavigation selectedItem="{! v.selectedItem }" onselect="{! c.handleSelect }"
+                                                class="navigation">
+                    	<br/>
+                    	<br/>
+                        <lightning:verticalNavigationItemIcon label="Home" name="Home" 
+                                                            iconName="utility:home" />
+                            <br/>
+                            <br/>
+                        <lightning:verticalNavigationItemIcon label="My Profile" name="My Profile"
+                                                             iconName="utility:user"/>
+
+                </lightning:verticalNavigation>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+
+
+    
+</aura:component>

@@ -1,0 +1,23 @@
+<template>     
+        <lightning-card>
+            <div class="slds-card" style="background-color : bisque">
+                <lightning-layout horizontal-align="center" vertical-align="center" 
+                                    pull-to-boundary="true">                 
+                    <lightning-layout-item flexibility="auto" padding="horizontal-medium">                    
+                        
+                            <p style="background-color : mintcream" >   
+                            Logged in as &nbsp;
+                            <lightning-formatted-text value={username}>
+                            </lightning-formatted-text>
+                            &nbsp;!!&nbsp;
+                            </p>          
+                    </lightning-layout-item>
+                    <lightning-layout-item flexibility="auto" padding="horizontal-medium">
+                        <lightning-button variant="brand-outline" label="Logout" 
+                                            onclick={logout} icon-name="utility:logout">
+                        </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-card>    
+</template>
