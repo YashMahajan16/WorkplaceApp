@@ -13,8 +13,11 @@ export default class Lwcuserlogincomponent extends NavigationMixin(LightningElem
 
     @track userIds = [];
     @track value = '';
+    @track username = '';
+
     selectedItemValue;
     context = createMessageContext();
+    userContext = createMessageContext();
 
     constructor(){
         super();
@@ -25,7 +28,7 @@ export default class Lwcuserlogincomponent extends NavigationMixin(LightningElem
         console.log('Message published for logged in user: ' + JSON.stringify(message));
     }
 
-    // fetching active users in org and loadiing the values in combo-box
+    // fetching active users in org and loading the values in combo-box
     @wire(getUserLogins)
     loginUsers({ error, data }) {
         if (data) {
@@ -47,9 +50,16 @@ export default class Lwcuserlogincomponent extends NavigationMixin(LightningElem
     // value change event for the combo-box
     handleChange(event) {
         const selectedOption = event.detail.value;
-        console.log('selectedOption = ' + selectedOption);
-        
+        console.log('selectedOption = ' + selectedOption);        
         this.selectedItemValue = event.detail.value;
+
+        //publish message to transfer user details
+        const userMessage = { 
+            userrecordId : this.selectedItemValue,
+            userrecordData : { value: 'Floyd , Harvey' } // need to read property dynamically
+        };
+        publish(this.userContext, USERCREDMC, userMessage);
+        console.log('Message -> Publishing user credentials ' + JSON.stringify(userMessage));
     }
 
     // login event, redirect 

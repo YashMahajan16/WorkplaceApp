@@ -1,7 +1,7 @@
 public class MyNewWorkplaceApp_UpdatePostController {
 
     @AuraEnabled
-    public static void UpdateSinglePostData(string recordId, boolean isDisliked){
+    public static void updateLikesData(string recordId, boolean isDisliked){
 
         System.debug(recordId);
 
@@ -55,7 +55,7 @@ public class MyNewWorkplaceApp_UpdatePostController {
     }
 
     @AuraEnabled
-    public static void UpdateCommentsData(string recordId, string message, string currentuserid){
+    public static void updateCommentsData(string recordId, string message, string currentuserid){
 
         System.debug(currentuserid);
         Comment__c newComment = new Comment__c();

@@ -32,25 +32,26 @@ export default class Lwcuserlogoutcomponent extends NavigationMixin(LightningEle
         publish(this.context, POSTDATAMC, message);
         console.log('Message published for logged out user: ' + JSON.stringify(message));
 
-        logoutUser().then(() => {
+        logoutUser()
+            .then(() => {
 
-            // displaying the logout success
-            const successEvent = new ShowToastEvent({
-                "title": "Logged out!",
-                "message": "User logged out successfully!",
-                "variant" : "success"
-            });
-            this.dispatchEvent(successEvent);
+                // displaying the logout success
+                const successEvent = new ShowToastEvent({
+                    "title": "Logged out!",
+                    "message": "User logged out successfully!",
+                    "variant" : "success"
+                });
+                this.dispatchEvent(successEvent);
 
-            // navigating back to the login page
-            this[NavigationMixin.Navigate]({
-                type: 'standard__navItemPage',
-                attributes: {
-                    apiName : 'User_Login'
-                }
-            });
-        }).catch(() => {
-            alert('Cannot logout user, try again later');
-        });
+                // navigating back to the login page
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__navItemPage',
+                    attributes: {
+                        apiName : 'User_Login'
+                    }
+                });
+            }).catch(() => {
+                alert('Cannot logout user, try again later');
+                });
     }
 }

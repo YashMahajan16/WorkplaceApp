@@ -1,8 +1,8 @@
 import { api, LightningElement, wire, track } from 'lwc';
 import { createMessageContext, publish} from 'lightning/messageService';
 
-import UpdateSinglePostData from '@salesforce/apex/MyNewWorkplaceApp_UpdatePostController.UpdateSinglePostData';
-import UpdateCommentsData from '@salesforce/apex/MyNewWorkplaceApp_UpdatePostController.UpdateCommentsData';
+import updateLikesData from '@salesforce/apex/MyNewWorkplaceApp_UpdatePostController.updateLikesData';
+import updateCommentsData from '@salesforce/apex/MyNewWorkplaceApp_UpdatePostController.updateCommentsData';
 
 import POSTDATAMC from "@salesforce/messageChannel/PostDataMessageChannel__c";
 
@@ -18,9 +18,7 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
     // variable to hold data for like and comments button state
     @track likeState = false;
     @track commentState = false;
-
     @track isDisliked = false;
-    @wire(UpdateSinglePostData, {recordId : '$recordid', isDisliked : false}) likesData;
 
     // properties / variables for message channel 
     context = createMessageContext();
@@ -40,23 +38,25 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
          else if (this.likeoldvalue == true){
             isTempDisliked = true;
          }
+
+         console.log('Has user disliked the post ? ' + isTempDisliked);
          this.isDisliked = isTempDisliked;
 
 
         // call to apex controller method
-        UpdateSinglePostData({
+        updateLikesData({
             recordId : this.recordid,
             isDisliked : isTempDisliked
             }).then(() => {
+
                     //code to publish the message
                     const message = { 
                         recordId : this.recordid,
                         recordData : { value: true }};
                     publish(this.context, POSTDATAMC, message);
-                    console.log('Message published : ' + JSON.stringify(message));
+                    console.log('Message -> User liked the post : ' + JSON.stringify(message));
+
         }).catch(error => console.log('there is some error : ' + error));
-
-
     }
 
     isCommented = false;
@@ -67,7 +67,7 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
         this.isCommented = true;    
     }
 
-    savePost(event) {
+    saveComment(event) {
         
         event.preventDefault();
         this.commentState = !this.commentState;
@@ -80,7 +80,7 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
         });
 
         //code to call apex
-        UpdateCommentsData({
+        updateCommentsData({
             recordId : this.recordid,
             message : inputComm,
             currentuserid : this.currentuserid
@@ -91,13 +91,15 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
                 recordData : { value: true } 
             };
             publish(this.context, POSTDATAMC, message);
-            console.log('Message published : ' + JSON.stringify(message));
+            console.log('Message -> User commented on post : ' + JSON.stringify(message));
 
             // code to reset the fields
             input.forEach(function(element) {
                 if(element.name == "inputComment")
                     element.value = '';            
             });
+
+            this.isCommented = false;
         })
         .catch(() => console.log('there is some error'));     
     }

@@ -5,29 +5,67 @@ import { createMessageContext, releaseMessageContext, APPLICATION_SCOPE, subscri
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import fetchAllPosts from '@salesforce/apex/MyNewWorkplaceApp_GetPostsApexController.fetchAllPosts';
-import initializeUserView from '@salesforce/apex/MyNewWorkplaceApp_GetPostsApexController.initializeUserView';
+//import initializeUserView from '@salesforce/apex/MyNewWorkplaceApp_GetPostsApexController.initializeUserView';
 import savePost from '@salesforce/apex/MyNewWorkplaceApp_CrtePstApexController.savePost';
 import getCurrentUser from '@salesforce/apex/Workplace_UserLoginController.getCurrentUser';
 
 import POSTDATAMC from "@salesforce/messageChannel/PostDataMessageChannel__c";
+import USERCREDMC from "@salesforce/messageChannel/CredMessageChannel__c";
 
 export default class Workplacecreateandgetposts extends LightningElement {
 
     @track imagesUploaded = [];
+    @track currentUserId = '';
+    @track currentUserName = '';
+
+    //fields to work with message channel
+    userContext = createMessageContext();
+    userSubscription = null;
+    @track userReceivedMessage = '';
 
     //fields to work with message channel
     context = createMessageContext();
+    subscription = null;
+    @track receivedMessage = '';
 
     constructor() {
         super();
         console.log('Initializing user view');
-        initializeUserView();
+        //initializeUserView();
+        //this.subscribeUSERCREDMC();        
     }
 
-    @wire(getCurrentUser) currentUser;
+    // Code to subscribe the message
+    connectedCallback() {
+        console.log('Message received');
+        this.subscribeUSERCREDMC();
+        this.subscribePOSTDATAMC();
+    }
 
-    subscription = null;
-    @track receivedMessage = '';
+    subscribeUSERCREDMC() {
+        // if (this.userSubscription) {
+        //     return;
+        // }
+        console.log('Catching user credentials - initial');
+        this.userSubscription = subscribe(this.userContext, USERCREDMC,
+                                            (message) => { 
+                                                console.log('Catching user credentials' + JSON.stringify(message));
+                                                this.handleUSERCREDMessage(message); 
+                                            },
+                                            { scope: APPLICATION_SCOPE });
+        }
+        
+    handleUSERCREDMessage(message) {
+        console.log('Received user credentials' + JSON.stringify(message));
+        this.currentUserId = message.userrecordId;
+        this.currentUserName = message.userrecordData.value;
+    }
+
+    disconnectedCallback() {
+        console.log('Releasing user credentials message');
+        releaseMessageContext(this.userContext);
+    }
+    //@wire(getCurrentUser) currentUser;
 
     // mapping of wire property to the apex controller method
     @wire(fetchAllPosts) allPosts;
@@ -67,13 +105,14 @@ export default class Workplacecreateandgetposts extends LightningElement {
 
         // reading input from UI and mapping to local variable
         this.postMessage = this.template.querySelector('lightning-input').value;
-        console.log('user name is : ' + this.currentUser.data.User_Name__c);
+        
+        console.log('Current user id is : ' + this.currentUserId + ' and user name is : ' + this.currentUserName);
 
         //call to apex controller method
         savePost({
             message : this.postMessage,
-            userName : this.currentUser.data.User_Name__c,
-            userId : this.currentUser.data.Id,
+            userName : this.currentUserName,
+            userId : this.currentUserId,
             files : this.imagesUploaded
         })
             .then(() => {
@@ -103,23 +142,18 @@ export default class Workplacecreateandgetposts extends LightningElement {
         );
     }
 
-    // Code to subscribe the message
-    connectedCallback() {
-        console.log('Message received');
-        this.subscribeMC();
-    }
-
-    subscribeMC() {
+    // Code to subscribe the post data message
+    subscribePOSTDATAMC() {
         if (this.subscription) {
             return;
         }
         this.subscription = subscribe(this.context, POSTDATAMC,
-            (message) => { this.handleMessage(message); },
+            (message) => { this.handlePOSTDATAMessage(message); },
             { scope: APPLICATION_SCOPE });
     }
 
-    handleMessage(message) {
-        console.log('received message:::' + JSON.stringify(message));
+    handlePOSTDATAMessage(message) {
+        console.log('Received post message :' + JSON.stringify(message));
 
         refreshApex(this.allPosts);
         console.log('Apex refreshed');

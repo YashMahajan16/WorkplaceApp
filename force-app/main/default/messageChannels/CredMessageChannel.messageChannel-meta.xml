@@ -4,11 +4,11 @@
     <isExposed>true</isExposed>
     <lightningMessageFields>
         <description>This is the user record Id that changed</description>
-        <fieldName>recordId</fieldName>
+        <fieldName>userrecordId</fieldName>
     </lightningMessageFields>
     <lightningMessageFields>
         <description>The current data representing the record that changed</description>
-        <fieldName>recordData</fieldName>
+        <fieldName>userrecordData</fieldName>
     </lightningMessageFields>
     <masterLabel>CredMessageChannel</masterLabel>
 </LightningMessageChannel>
