@@ -1,25 +1,33 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
-import { createMessageContext, releaseMessageContext, APPLICATION_SCOPE, subscribe, unsubscribe }
+import { createMessageContext, releaseMessageContext, APPLICATION_SCOPE, subscribe, unsubscribe, MessageContext }
     from 'lightning/messageService';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import fetchAllPosts from '@salesforce/apex/MyNewWorkplaceApp_GetPostsApexController.fetchAllPosts';
-//import initializeUserView from '@salesforce/apex/MyNewWorkplaceApp_GetPostsApexController.initializeUserView';
 import savePost from '@salesforce/apex/MyNewWorkplaceApp_CrtePstApexController.savePost';
-import getCurrentUser from '@salesforce/apex/Workplace_UserLoginController.getCurrentUser';
 
 import POSTDATAMC from "@salesforce/messageChannel/PostDataMessageChannel__c";
 import USERCREDMC from "@salesforce/messageChannel/CredMessageChannel__c";
+import LogoutMC from "@salesforce/messageChannel/UserLogoutMessageChannel__c";
 
 export default class Workplacecreateandgetposts extends LightningElement {
+
+    isVisible = false;
 
     @track imagesUploaded = [];
     @track currentUserId = '';
     @track currentUserName = '';
 
+    // mapping of wire property to the apex controller method
+    @wire(fetchAllPosts, {currentUserId : '$currentUserId'}) allPosts;
+
+    // properties / to used for holding input text
+    @track postMessage;
+
     //fields to work with message channel
-    userContext = createMessageContext();
+    //userContext = createMessageContext();
+    @wire(MessageContext) userContext;
     userSubscription = null;
     @track userReceivedMessage = '';
 
@@ -28,52 +36,91 @@ export default class Workplacecreateandgetposts extends LightningElement {
     subscription = null;
     @track receivedMessage = '';
 
+            //LogoutMC
+            @wire(MessageContext) logoutContext;
+            logoutSubscription = null;
+            @track logoutReceivedMessage = '';
+
     constructor() {
         super();
-        console.log('Initializing user view');
-        //initializeUserView();
-        //this.subscribeUSERCREDMC();        
+        console.log('Initializing user view');    
     }
 
     // Code to subscribe the message
     connectedCallback() {
-        console.log('Message received');
+        console.log('Create and get post comp - Message received');
         this.subscribeUSERCREDMC();
         this.subscribePOSTDATAMC();
     }
 
     subscribeUSERCREDMC() {
-        // if (this.userSubscription) {
-        //     return;
-        // }
-        console.log('Catching user credentials - initial');
+
+        if (this.userSubscription) {
+            return;
+        }
+
+        console.log('Message Subscription 1 - ' + this.userSubscription);
         this.userSubscription = subscribe(this.userContext, USERCREDMC,
-                                            (message) => { 
-                                                console.log('Catching user credentials' + JSON.stringify(message));
+                                          (message) => { 
+                                              console.log('Create and get post comp - Catching user credentials');
                                                 this.handleUSERCREDMessage(message); 
                                             },
                                             { scope: APPLICATION_SCOPE });
+
+        console.log('Message Subscription 2 - ' + this.subscription);
+        if (this.subscription) {
+            return;
         }
+        this.subscription = subscribe(this.context, POSTDATAMC,
+        (message) => { this.handlePOSTDATAMessage(message); },
+        { scope: APPLICATION_SCOPE });
+
+        console.log('Message Subscription 3 - ' + this.logoutSubscription);
+        if (this.logoutSubscription) {
+          return;
+        }
+         this.logoutSubscription = subscribe(this.logoutContext, LogoutMC, 
+          (message) => { this.handlelogoutMessage(message); },
+          {scope: APPLICATION_SCOPE});
+   }
         
     handleUSERCREDMessage(message) {
-        console.log('Received user credentials' + JSON.stringify(message));
-        this.currentUserId = message.userrecordId;
-        this.currentUserName = message.userrecordData.value;
+        console.log('Create and get post comp - Received user credentials' + JSON.stringify(message));
+        this.currentUserId = message.userRecordId;
+        this.currentUserName = message.userRecordData.userName;
+        this.isVisible = message.userRecordData.isLoggedIn; 
+
+        refreshApex(this.allPosts);
     }
 
-    disconnectedCallback() {
-        console.log('Releasing user credentials message');
-        releaseMessageContext(this.userContext);
+    // Code to subscribe the post data message
+    subscribePOSTDATAMC() {
+        if (this.subscription) {
+            return;
+        }
+        this.subscription = subscribe(this.context, POSTDATAMC,
+            (message) => { this.handlePOSTDATAMessage(message); },
+            { scope: APPLICATION_SCOPE });
     }
-    //@wire(getCurrentUser) currentUser;
 
-    // mapping of wire property to the apex controller method
-    @wire(fetchAllPosts) allPosts;
+    handlePOSTDATAMessage(message) {
+        console.log('Create and get post comp - Received post message :' + JSON.stringify(message));
+        refreshApex(this.allPosts);
+    }
 
-    updatePosts;
+    subscribeLogoutMC() {
+      if (this.logoutSubscription) {
+          return;
+      }
+      this.logoutSubscription = subscribe(this.context, LogoutMC, 
+          (message) => { this.handlelogoutMessage(message); },
+          {scope: APPLICATION_SCOPE});
+    }
 
-    // properties / to used for holding input text
-    @track postMessage;
+    handlelogoutMessage(message) {       
+      console.log('Create and get post comp - received logout message : '+ JSON.stringify(message));        
+      this.isVisible = false;
+    }
 
     // code to handle the image upload
     handleImageUploaded(event) {
@@ -140,22 +187,5 @@ export default class Workplacecreateandgetposts extends LightningElement {
                 variant: variant
             })
         );
-    }
-
-    // Code to subscribe the post data message
-    subscribePOSTDATAMC() {
-        if (this.subscription) {
-            return;
-        }
-        this.subscription = subscribe(this.context, POSTDATAMC,
-            (message) => { this.handlePOSTDATAMessage(message); },
-            { scope: APPLICATION_SCOPE });
-    }
-
-    handlePOSTDATAMessage(message) {
-        console.log('Received post message :' + JSON.stringify(message));
-
-        refreshApex(this.allPosts);
-        console.log('Apex refreshed');
     }
 }

@@ -46,6 +46,7 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
         // call to apex controller method
         updateLikesData({
             recordId : this.recordid,
+            currentUserId : this.currentuserid,
             isDisliked : isTempDisliked
             }).then(() => {
 
@@ -54,7 +55,7 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
                         recordId : this.recordid,
                         recordData : { value: true }};
                     publish(this.context, POSTDATAMC, message);
-                    console.log('Message -> User liked the post : ' + JSON.stringify(message));
+                    console.log('Message -> User liked / disliked the post : ' + JSON.stringify(message));
 
         }).catch(error => console.log('there is some error : ' + error));
     }

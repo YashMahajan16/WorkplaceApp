@@ -1,7 +1,7 @@
 <template>    
+    <div if:true={isEdit}>
         <lightning-card>
             <div style="background-color: steelblue">
-                <template if:true={isEdit}>
                     <lightning-layout vertical-align="center" horizontal-align="center">
                         <lightning-layout-item flexibility="auto" padding="horizontal-small">
                             <div style="width: 300px; text-align: center; background-color: paleturquoise ">
@@ -59,7 +59,7 @@
                             </lightning-layout-item>
                         </lightning-layout>
                     </template>
-                </template>
             </div>
         </lightning-card>
+    </div>
 </template>

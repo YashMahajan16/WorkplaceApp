@@ -13,7 +13,8 @@ public with sharing class Workplace_UserLoginController {
     {
         try {            
             System.debug('Fetching all users');
-            List<User_Login_Detail__c> userLogins = [SELECT Id, User_Name__c 
+            List<User_Login_Detail__c> userLogins = [SELECT Id, User_Name__c, First_Name__c, Last_Name__c, 
+                                                            Department__c, City__c, Profile_Picture_Path__c
                                                      FROM User_Login_Detail__c
                                                      ORDER BY User_Name__c];
         
@@ -25,42 +26,15 @@ public with sharing class Workplace_UserLoginController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static User_Login_Detail__c getCurrentUser()
+    public static User_Login_Detail__c getCurrentUser(string userId)
     {
         try {            
             System.debug('Fetching current user');
             User_Login_Detail__c currentUser = [SELECT Id, User_Name__c, First_Name__c, Last_Name__c, 
                                                         Department__c, City__c, Profile_Picture_Path__c
                                                 FROM User_Login_Detail__c
-                                                WHERE Is_Current_User__c = true];    
+                                                WHERE Id =: userId];    
             return currentUser;
-        } 
-        catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled
-    public static void markCurrentUser(String userId)
-    {
-        try {            
-            System.debug('Setting current user : ' + userId);
-            List<User_Login_Detail__c> activeUsers = [SELECT Id, User_Name__c, Is_Current_User__c
-                                                        FROM User_Login_Detail__c];                                                
-                                                
-            for(User_Login_Detail__c user: activeUsers){
-
-                if(user.Id == userId)
-                {
-                    user.Is_Current_User__c = true;
-                    System.debug('Current user is : ' + user.User_Name__c);
-                }
-                    
-                else 
-                    user.Is_Current_User__c = false;
-            }
-
-            update activeUsers;
         } 
         catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

@@ -1,17 +1,22 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-import { createMessageContext, releaseMessageContext, APPLICATION_SCOPE, subscribe, unsubscribe, publish } 
+import { createMessageContext, releaseMessageContext, APPLICATION_SCOPE, subscribe, unsubscribe, publish, 
+          MessageContext } 
     from 'lightning/messageService';
 
 import USERMC from "@salesforce/messageChannel/UserMessageChannel__c";
 import POSTDATAMC from "@salesforce/messageChannel/PostDataMessageChannel__c";
+import USERCREDMC from "@salesforce/messageChannel/CredMessageChannel__c";
+import LogoutMC from "@salesforce/messageChannel/UserLogoutMessageChannel__c"
 
-import getCurrentUser from '@salesforce/apex/Workplace_UserLoginController.getCurrentUser';
 import updateCurrentUser from '@salesforce/apex/Workplace_UserLoginController.updateCurrentUser';
+import getCurrentUser from '@salesforce/apex/Workplace_UserLoginController.getCurrentUser';
 
 export default class Lwcusereditcomponent extends LightningElement {
 
+    isVisible = false;
+    
     @track isCurrentUserEdit = false;
     @track id = '';
     @track fName = '';
@@ -23,24 +28,91 @@ export default class Lwcusereditcomponent extends LightningElement {
 
     @track picUpload = [];
 
+    @wire(getCurrentUser, {userId : '$id'}) 
+    currentUser ({ error, data }) {
+      if (data) {
+
+        this.id = data.Id;
+        this.fName = data.First_Name__c;
+        this.lName = data.Last_Name__c;
+        this.department = data.Department__c;
+        this.city = data.City__c;
+        this.userName = data.User_Name__c;
+        this.profilePicPath = data.Profile_Picture_Path__c;
+        this.error = undefined;
+
+      } else if (error) {
+          this.error = error;
+      }
+  }
+
     isEdit = false;
 
-    @wire(getCurrentUser) currentUser;
-
-    // fields to work with message channel
+    // fields to work with USERMC message channel
     context = createMessageContext();
     subscription = null;
     @track receivedMessage = '';
 
 
+    //USERCREDMC
+    @wire(MessageContext) userContext;
+    userSubscription = null;
+    @track userReceivedMessage = '';
+    
+    //LogoutMC
+    @wire(MessageContext) logoutContext;
+    logoutSubscription = null;
+    @track logoutReceivedMessage = '';
+
     // code to handle the lightning message
     connectedCallback(){
-        console.log('User Cred received');
+        console.log('User edit comp - User Cred received');
+        this.subscribeUSERCREDMC();
         this.subscribeMC();
     }
 
+    subscribeUSERCREDMC() {
+
+      if (this.userSubscription) {
+          return;
+      }
+
+      console.log('Message Subscription 1 - ' + this.userSubscription);
+      this.userSubscription = subscribe(this.userContext, USERCREDMC,
+                                        (message) => { 
+                                            console.log('User edit comp - Catching user credentials');
+                                              this.handleUSERCREDMessage(message); 
+                                              refreshApex(this.currentUser); 
+                                          },
+                                          { scope: APPLICATION_SCOPE });
+
+      console.log('Message Subscription 2 - ' + this.subscription);
+      if (this.subscription) {
+          return;
+      }
+      this.subscription = subscribe(this.context, USERMC,
+      (message) => { this.handleMessage(message); },
+      { scope: APPLICATION_SCOPE });
+
+      console.log('Message Subscription 3 - ' + this.logoutSubscription);
+      if (this.logoutSubscription) {
+        return;
+      }
+       this.logoutSubscription = subscribe(this.context, LogoutMC, 
+        (message) => { this.handlelogoutMessage(message); },
+        {scope: APPLICATION_SCOPE});
+   }
+        
+    handleUSERCREDMessage(message) {
+        
+      console.log('User edit comp - Received user credentials' + JSON.stringify(message));
+      this.id = message.userRecordId;
+      this.isVisible = message.userRecordData.isLoggedIn; 
+
+      refreshApex(this.currentUser);        
+    }
+
     subscribeMC() {
-        refreshApex(this.currentUser);
         if (this.subscription) {
             return;
         }
@@ -50,24 +122,37 @@ export default class Lwcusereditcomponent extends LightningElement {
      }
 
      handleMessage(message) {       
-        console.log('received cred message:::'+JSON.stringify(message));        
+        console.log('User edit comp - received cred message : '+ JSON.stringify(message));        
         this.isEdit = message.recordData.value;
     }
+
+    subscribeLogoutMC() {
+      if (this.logoutSubscription) {
+          return;
+      }
+      this.logoutSubscription = subscribe(this.context, LogoutMC, 
+          (message) => { this.handlelogoutMessage(message); },
+          {scope: APPLICATION_SCOPE});
+   }
+
+   handlelogoutMessage(message) {       
+      console.log('User edit comp - received logout message : '+ JSON.stringify(message));        
+      this.isVisible = false;
+  }
 
     // setting the input fields
     edit(){
 
-        this.id = this.currentUser.data.Id;
-        this.fName = this.currentUser.data.First_Name__c;
-        this.lName = this.currentUser.data.Last_Name__c;
-        this.department = this.currentUser.data.Department__c;
-        this.city = this.currentUser.data.City__c;
-        this.userName = this.currentUser.data.User_Name__c;
-        this.profilePicPath = this.currentUser.data.Profile_Picture_Path__c;
+      console.log('Edit button clicked');
+      this.isCurrentUserEdit = true;
+      refreshApex(this.currentUser);
 
-        console.log('Profile pic path is : ' + this.currentUser.data.Profile_Picture_Path__c);
-        this.isCurrentUserEdit = true;
-        refreshApex(this.currentUser);
+      console.log(this.id);
+      console.log(this.fName);
+      console.log(this.lName);
+      console.log(this.department);
+      console.log(this.city);
+      console.log(this.userName);      
     }
 
 
@@ -126,6 +211,7 @@ export default class Lwcusereditcomponent extends LightningElement {
                             profilePic : this.picUpload
                         }).then(() => {
 
+                          refreshApex(this.currentUser);
                             //code to publish the message
                             const message = { 
                                 recordId : 'user profile update',
@@ -138,9 +224,8 @@ export default class Lwcusereditcomponent extends LightningElement {
                                 "variant": "success" 
                             });
                             this.dispatchEvent(successEvent);
-                            refreshApex(this.currentUser);
                         }).catch(error => console.log('there is some error : ' + error));
 
-       this.isCurrentUserEdit = false;
+                        this.isCurrentUserEdit = false;
     }
 }

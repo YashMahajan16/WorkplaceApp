@@ -3,12 +3,12 @@
     <description>This is a Lightning Message Channel for updating the post data.</description>
     <isExposed>true</isExposed>
     <lightningMessageFields>
-        <description>This is the record Id that changed</description>
+        <description>This is the user record Id that changed</description>
         <fieldName>recordId</fieldName>
     </lightningMessageFields>
     <lightningMessageFields>
         <description>The current data representing the record that changed</description>
         <fieldName>recordData</fieldName>
     </lightningMessageFields>
-    <masterLabel>PostDataMessageChannel</masterLabel>
+    <masterLabel>UserLogoutMessageChannel</masterLabel>
 </LightningMessageChannel>

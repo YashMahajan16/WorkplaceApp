@@ -1,15 +1,10 @@
 public class MyNewWorkplaceApp_UpdatePostController {
 
     @AuraEnabled
-    public static void updateLikesData(string recordId, boolean isDisliked){
+    public static void updateLikesData(string recordId, string currentUserId, boolean isDisliked){
 
-        System.debug(recordId);
-
-        User_Login_Detail__c currentUser = [SELECT Id, User_Name__c
-                                            FROM User_Login_Detail__c
-                                            WHERE Is_Current_User__c = true]; 
-
-        string currentUserId = currentUser.Id;
+        System.debug('Post id is : ' + recordId);
+        System.debug('User id is : ' + currentUserId);
         system.debug('Is post disliked ? : ' + isDisliked);
         
         if(isDisliked == false){

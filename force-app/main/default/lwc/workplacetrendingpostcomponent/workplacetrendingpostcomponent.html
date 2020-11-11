@@ -1,4 +1,5 @@
 <template>    
+    <div if:true={isVisible}>
         <template if:true={topFeeds.data}>
             <template for:each={topFeeds.data} for:item="feed"> 
                 <div key={feed.Id} style="background-color: lavender">            
@@ -41,4 +42,5 @@
                 </div>             
             </template>
         </template>    
+    </div>
 </template>

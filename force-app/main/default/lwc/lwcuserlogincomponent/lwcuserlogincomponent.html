@@ -1,36 +1,38 @@
 <template>
-    <lightning-card>
-        <h3 slot="title">
-            <!-- selecting the user -->
-            <lightning-layout horizontal-align="center" vertical-align="center" pull-to-boundary="small">
-                <lightning-layout-item flexibility="auto" padding="horizontal-small">
-                    <lightning-combobox name="userSelection"
-                                        label="Select user"
-                                        value={value}
-                                        placeholder="Choose User"
-                                        options={statusOptions}
-                                        onchange={handleChange}
-                                        required>
-                    </lightning-combobox>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                </lightning-layout-item>
-         </lightning-layout>
-
-        </h3>
-        <div slot="footer">
-            <!-- Button to login in the app -->
-            <lightning-layout horizontal-align="center" vertical-align="center" pull-to-boundary="small">
-                <lightning-layout-item flexibility="auto" padding="horizontal-small">
-                    <lightning-button
-                    variant="brand"
-                    label="Login"
-                    onclick={userLogin}>
-                </lightning-button>
-                </lightning-layout-item>
+    <div if:true={isVisible}>
+        <lightning-card>
+            <h3 slot="title">
+                <!-- selecting the user -->
+                <lightning-layout horizontal-align="center" vertical-align="center" pull-to-boundary="small">
+                    <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                        <lightning-combobox name="userSelection"
+                                            label="Select user"
+                                            value={value}
+                                            placeholder="Choose User"
+                                            options={statusOptions}
+                                            onchange={handleChange}
+                                            required>
+                        </lightning-combobox>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                    </lightning-layout-item>
             </lightning-layout>
-        </div>
-    </lightning-card>    
+
+            </h3>
+            <div slot="footer">
+                <!-- Button to login in the app -->
+                <lightning-layout horizontal-align="center" vertical-align="center" pull-to-boundary="small">
+                    <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                        <lightning-button
+                        variant="brand"
+                        label="Login"
+                        onclick={userLogin}>
+                    </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-card>    
+    </div>
 </template>
