@@ -28,23 +28,7 @@ export default class Lwcusereditcomponent extends LightningElement {
 
     @track picUpload = [];
 
-    @wire(getCurrentUser, {userId : '$id'}) 
-    currentUser ({ error, data }) {
-      if (data) {
-
-        this.id = data.Id;
-        this.fName = data.First_Name__c;
-        this.lName = data.Last_Name__c;
-        this.department = data.Department__c;
-        this.city = data.City__c;
-        this.userName = data.User_Name__c;
-        this.profilePicPath = data.Profile_Picture_Path__c;
-        this.error = undefined;
-
-      } else if (error) {
-          this.error = error;
-      }
-  }
+    @wire(getCurrentUser, {userId : '$id'}) currentUser;
 
     isEdit = false;
 
@@ -82,7 +66,6 @@ export default class Lwcusereditcomponent extends LightningElement {
                                         (message) => { 
                                             console.log('User edit comp - Catching user credentials');
                                               this.handleUSERCREDMessage(message); 
-                                              refreshApex(this.currentUser); 
                                           },
                                           { scope: APPLICATION_SCOPE });
 
@@ -98,7 +81,7 @@ export default class Lwcusereditcomponent extends LightningElement {
       if (this.logoutSubscription) {
         return;
       }
-       this.logoutSubscription = subscribe(this.context, LogoutMC, 
+       this.logoutSubscription = subscribe(this.logoutContext, LogoutMC, 
         (message) => { this.handlelogoutMessage(message); },
         {scope: APPLICATION_SCOPE});
    }
@@ -144,15 +127,22 @@ export default class Lwcusereditcomponent extends LightningElement {
     edit(){
 
       console.log('Edit button clicked');
-      this.isCurrentUserEdit = true;
-      refreshApex(this.currentUser);
 
-      console.log(this.id);
-      console.log(this.fName);
-      console.log(this.lName);
-      console.log(this.department);
-      console.log(this.city);
-      console.log(this.userName);      
+      this.id = this.currentUser.data.Id;
+      this.fName = this.currentUser.data.First_Name__c;
+      this.lName = this.currentUser.data.Last_Name__c;
+      this.department = this.currentUser.data.Department__c;
+      this.city = this.currentUser.data.City__c;
+      this.profilePicPath = this.currentUser.data.Profile_Picture_Path__c;
+
+      console.log('id is : ' + this.currentUser.data.Id);
+      console.log('fName is : ' + this.fName);
+      console.log('lName is : ' + this.lName);
+      console.log('department is : ' + this.department);
+      console.log('city is : ' + this.city);
+
+      this.isCurrentUserEdit = true;      
+      refreshApex(this.currentUser);   
     }
 
 
@@ -180,6 +170,7 @@ export default class Lwcusereditcomponent extends LightningElement {
         }
     }
 
+    pubContext = createMessageContext();
 
     // call to user update
     save(){
@@ -210,13 +201,13 @@ export default class Lwcusereditcomponent extends LightningElement {
                             userId : this.id,
                             profilePic : this.picUpload
                         }).then(() => {
-
+                          console.log('USer edit comp - refresh apex');
                           refreshApex(this.currentUser);
                             //code to publish the message
                             const message = { 
                                 recordId : 'user profile update',
                                 recordData : { value: true }};
-                            publish(this.context, POSTDATAMC, message);
+                            publish(this.pubContext, POSTDATAMC, message);
 
                             const successEvent = new ShowToastEvent({
                                 "title": "Success!",
@@ -224,8 +215,10 @@ export default class Lwcusereditcomponent extends LightningElement {
                                 "variant": "success" 
                             });
                             this.dispatchEvent(successEvent);
+                            refreshApex(this.currentUser);
                         }).catch(error => console.log('there is some error : ' + error));
 
+                        
                         this.isCurrentUserEdit = false;
     }
 }

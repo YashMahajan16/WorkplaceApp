@@ -64,11 +64,11 @@ public with sharing class Workplace_UserLoginController {
                                             List<Map<string, Object>> profilePic) 
     {
         try {            
-            System.debug('Updating user');
+            System.debug('Updating user' + userId);
             User_Login_Detail__c exsistinguser = [SELECT Id, User_Name__c, First_Name__c, Last_Name__c, 
                                                         Department__c, City__c, Profile_Picture_Path__c
                                                 FROM User_Login_Detail__c
-                                                WHERE User_Name__c =: userName];
+                                                WHERE Id =: userId];
             
            //code to upload the profile pic in content version    
            
