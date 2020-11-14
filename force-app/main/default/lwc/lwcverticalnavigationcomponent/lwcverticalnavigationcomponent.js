@@ -77,28 +77,34 @@ export default class Lwcverticalnavigationcomponent extends LightningElement {
         const selected = event.detail.name;
         if (selected === 'My Profile') {
 
-            // code to fire event
             event.preventDefault();
             const message = { 
                 recordId : this.currentUserId,
-                recordData : { value: true } 
+                recordData : { isEdit: true , isMyPost: false} 
              };
     
-            publish(this.pubContext, USERMC, message);            
-            console.log('My Profile : ' + JSON.stringify(message));
+            publish(this.pubContext, USERMC, message);  
         }
         if (selected === 'Home') {
 
-            // code to publish the lightning message
             event.preventDefault();
             const message = { 
                 recordId : this.currentUserId,
-                recordData : { value: false } 
+                recordData : { isEdit: false , isMyPost: false } 
              };
     
-            publish(this.pubContext, USERMC, message);            
-            console.log('Home : ' + JSON.stringify(message));
-            console.log('Home user id is : ' + message.recordId);
+            publish(this.pubContext, USERMC, message); 
+        }
+
+        if(selected === 'My Posts'){
+          
+          event.preventDefault();
+          const message = { 
+            recordId : this.currentUserId,
+            recordData : { isEdit: false , isMyPost: true } 
+          };
+          
+          publish(this.pubContext, USERMC, message);
         }
         this.currentContent = selected;
     }

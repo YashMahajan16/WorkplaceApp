@@ -3,6 +3,7 @@ import { createMessageContext, publish} from 'lightning/messageService';
 
 import updateLikesData from '@salesforce/apex/MyNewWorkplaceApp_UpdatePostController.updateLikesData';
 import updateCommentsData from '@salesforce/apex/MyNewWorkplaceApp_UpdatePostController.updateCommentsData';
+import deletePost from '@salesforce/apex/Workplace_MyPostsController.deletePost'
 
 import POSTDATAMC from "@salesforce/messageChannel/PostDataMessageChannel__c";
 
@@ -14,6 +15,7 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
     @api likeoldvalue;
     @api recordid;
     @api currentuserid;
+    @api ismypost = false;
 
     // variable to hold data for like and comments button state
     @track likeState = false;
@@ -50,13 +52,11 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
             isDisliked : isTempDisliked
             }).then(() => {
 
-                    //code to publish the message
-                    const message = { 
-                        recordId : this.recordid,
-                        recordData : { value: true }};
-                    publish(this.context, POSTDATAMC, message);
-                    console.log('Message -> User liked / disliked the post : ' + JSON.stringify(message));
-
+              //code to publish the message
+              const message = { 
+                recordId : this.recordid,
+                recordData : { value: true }};
+                publish(this.context, POSTDATAMC, message);
         }).catch(error => console.log('there is some error : ' + error));
     }
 
@@ -103,5 +103,17 @@ export default class Workplace_lwcsinglepostcomponent extends LightningElement {
             this.isCommented = false;
         })
         .catch(() => console.log('there is some error'));     
+    }
+
+    handleDeleteButtonClick(){
+
+      deletePost({ postId : this.recordid
+                }).then(() => {
+              //code to publish the message
+              const message = { 
+                recordId : this.recordid,
+                recordData : { value: true }};
+                publish(this.context, POSTDATAMC, message);
+                }).catch(() => console.log('there is some error')); 
     }
 }

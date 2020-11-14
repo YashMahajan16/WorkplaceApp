@@ -68,7 +68,14 @@
                             </lightning-button>
                         </lightning-layout-item>
                     </lightning-layout>
-                </template>            
+                </template> 
+                <template if:true={ismypost}>
+                  <lightning-layout-item padding="horizontal-small">
+                    <lightning-button icon-name="utility:delete" label="Delete" variant="base"
+                                        onclick={handleDeleteButtonClick}>
+                    </lightning-button>                     
+                </lightning-layout-item>
+                </template>           
             </lightning-layout>   
         </div>
             <br/> 

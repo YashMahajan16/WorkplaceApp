@@ -84,6 +84,7 @@ export default class Lwcuserlogincomponent extends NavigationMixin(LightningElem
         }
     }
 
+    //values for combo-box
     get statusOptions() {
         console.log(this.userIds);
             return this.userIds;

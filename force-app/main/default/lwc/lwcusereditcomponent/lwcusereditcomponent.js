@@ -106,7 +106,7 @@ export default class Lwcusereditcomponent extends LightningElement {
 
      handleMessage(message) {       
         console.log('User edit comp - received cred message : '+ JSON.stringify(message));        
-        this.isEdit = message.recordData.value;
+        this.isEdit = message.recordData.isEdit;
     }
 
     subscribeLogoutMC() {
